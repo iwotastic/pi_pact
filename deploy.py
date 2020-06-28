@@ -6,20 +6,26 @@ from paramiko import *
 import os
 import io
 import argparse
+from getpass import getpass
 
 # Set up parameters
 parser = argparse.ArgumentParser(description="Automatically transfers PiPACT code to Raspberry Pi")
 parser.add_argument("--user", "-u", default="pi", required=False, help="Username to ssh as")
 parser.add_argument("--address", "-a", required=True, help="Address to connect to")
 parser.add_argument("--folder", "-f", default="reference_code", required=False, help="Folder relative to home folder of USER to upload to")
+parser.add_argument("--use-ssh-key", "-k", action="store_true")
 
 # Get args
 args = parser.parse_args()
 
 # Connect
 client = SSHClient()
-client.load_system_host_keys()
-client.connect(args["address"], username=args["user"])
+
+if args.use_ssh_key:
+  client.load_system_host_keys()
+
+client.set_missing_host_key_policy(AutoAddPolicy())
+client.connect(args.address, username=args.user, password=getpass("Password for " + args.user + ": "))
 
 # Connect SFTP
 with client.open_sftp() as sftp:
@@ -31,6 +37,6 @@ with client.open_sftp() as sftp:
   # Send to main dir
   for fileToSend in filesToSend:
     print("Sending " + fileToSend + " to main directory...")
-    sftp.put(os.getcwd() + "/" + fileToSend, "/home/" + args["user"] + "/" + args["folder"] + "/" + fileToSend)
+    sftp.put(os.getcwd() + "/" + fileToSend, "/home/" + args.user + "/" + args.folder + "/" + fileToSend)
 
   print("All files sent!")
