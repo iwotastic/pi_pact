@@ -1,5 +1,5 @@
-# BWSI piPACT Reference Code
-BWSI piPACT Reference/instructor developed code for Raspberry Pi based BLE RSSI measurement collection.
+# Ian's BWSI piPACT Code
+This is my modification of the instructor code for BWSI PiPACT. The original code is available at [BWSI-piPACT/reference_code](https://github.com/BWSI-piPACT/reference_code). The following text is unmodified from the original repository.
 
 # Requirements
 Stated versions are tested and validated. Newer or older versions are not guaranteed to work.
