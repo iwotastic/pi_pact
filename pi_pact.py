@@ -20,6 +20,7 @@ import sys
 import time
 from uuid import uuid1
 import yaml
+import subprocess
 
 # Default configuration
 LOG_NAME = 'pi_pact.log'
@@ -515,7 +516,9 @@ class Scanner(object):
         """
         # Collect all advertisements
         advertisements = []
-        for (scan, timestamp) in zip_longest(scans, timestamps):
+        for (arr, timestamp) in zip_longest(scans, timestamps):
+            scan = arr[0]
+            wifi_rssi = arr[1]
             for address, payload in scan.items():
                 advertisement = {'ADDRESS': address, 'TIMESTAMP': timestamp}
                 advertisement['UUID'] = payload[0]
@@ -523,10 +526,21 @@ class Scanner(object):
                 advertisement['MINOR'] = payload[2]
                 advertisement['TX POWER'] = payload[3]
                 advertisement['RSSI'] = payload[4]
+                advertisement['WIFI RSSI'] = wifi_rssi
                 advertisements.append(advertisement)
         # Format into DataFrame
         return  pd.DataFrame(advertisements,columns=['ADDRESS', 'TIMESTAMP', 
-            'UUID', 'MAJOR', 'MINOR', 'TX POWER', 'RSSI'])
+            'UUID', 'MAJOR', 'MINOR', 'TX POWER', 'RSSI', 'WIFI RSSI'])
+
+    def get_wifi_rssi(self):
+        """
+        Fetches WiFi RSSI using the iwconfig shell command. This is probably
+        not the most efficient way to determine this, but oh well.
+        """
+        iwconfig = subprocess.run(["iwconfig"], capture_output=True, text=True)
+        rssi_location = iwconfig.find("Signal level=") + len("Signal level=")
+        rssi_str = iwconfig[rssi_location : iwconfig.find(" ", rssi_location)]
+        return int(rssi_str)
 
     def scan(self, scan_prefix='', timeout=0, revisit=1):
         """Execute BLE beacon scan.
@@ -568,7 +582,7 @@ class Scanner(object):
             self.__logger.debug(f"Performing scan #{scan_count} at revisit "
                     f"{self.revisit}.")
             timestamps.append(datetime.now())
-            scans.append(self.__service.scan(self.revisit))
+            scans.append([self.__service.scan(self.revisit), self.get_wifi_rssi()])
             # Stop advertising based on either timeout or control file
             if timeout is not None:
                 if (time.monotonic()-start_time) > timeout:
