@@ -537,7 +537,7 @@ class Scanner(object):
         Fetches WiFi RSSI using the iwconfig shell command. This is probably
         not the most efficient way to determine this, but oh well.
         """
-        iwconfig = subprocess.run(["iwconfig"], capture_output=True, text=True)
+        iwconfig = subprocess.run(["iwconfig"], capture_output=True, text=True).stdout
         rssi_location = iwconfig.find("Signal level=") + len("Signal level=")
         rssi_str = iwconfig[rssi_location : iwconfig.find(" ", rssi_location)]
         return int(rssi_str)
