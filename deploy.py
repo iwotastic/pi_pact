@@ -32,12 +32,24 @@ with client.open_sftp() as sftp:
   # Set up files to send
   filesToSend = [
     "pi_pact.py",
-    "pi_pact_config.yml"
+    "pi_pact_config.yml",
+    "index.html"
   ]
 
   # Send to main dir
   for fileToSend in filesToSend:
     print("Sending " + fileToSend + " to main directory...")
     sftp.put(os.getcwd() + "/" + fileToSend, "/home/" + args.user + "/" + args.folder + "/" + fileToSend)
+
+  # Set up files to send
+  filesToSendServerFiles = [
+    "script.js",
+    "style.css"
+  ]
+
+  # Send to main dir
+  for fileToSend in filesToSendServerFiles:
+    print("Sending " + fileToSend + " to server directory...")
+    sftp.put(os.getcwd() + "/server_files/" + fileToSend, "/home/" + args.user + "/" + args.folder + "/server_files/" + fileToSend)
 
   print("All files sent!")

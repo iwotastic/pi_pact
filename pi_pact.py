@@ -21,6 +21,8 @@ import time
 from uuid import uuid1
 import yaml
 import subprocess
+import cherrypy
+import os
 
 # Default configuration
 LOG_NAME = 'pi_pact.log'
@@ -603,6 +605,11 @@ class Scanner(object):
         advertisements = self.filter_advertisements(advertisements)
         advertisements.to_csv(scan_file, index_label='SCAN')
         return advertisements
+
+class ScannerServer:
+    @cherrypy.expose
+    def index(self):
+        return open("index.html")
     
 def setup_logger(config):
     """Setup and return logger based on configuration."""
@@ -678,6 +685,8 @@ def parse_args(args):
                             help="Beacon advertiser mode.")
     mode_group.add_argument('-s', '--scanner', action='store_true',
                             help="Beacon scanner mode.")
+    parser.add_argument('-w', '--webserver', action='store_true',
+                            help="Webserver mode (only useable with scanner mode).")
     parser.add_argument('--config_yml', help="Configuration YAML.")
     parser.add_argument('--control_file', help="Control file.")
     parser.add_argument('--scan_prefix', help="Scan output file prefix.")
@@ -695,6 +704,8 @@ def parse_args(args):
     parser.add_argument('--revisit', type=int, 
             help="Beacon scanner revisit interval (s)")
     return vars(parser.parse_args(args))
+
+
     
 def main(args):
     """Creates beacon and either starts advertising or scanning.
@@ -721,10 +732,25 @@ def main(args):
             advertiser.advertise()
             output = None
         elif parsed_args['scanner']:
-            logger.info("Beacon scanner mode selected.")
-            scanner = Scanner(logger, **config['scanner'])
-            advertisements = scanner.scan()
-            output = advertisements
+            if parsed_args['webserver']:
+                logger.info("Beacon scanner mode (with webserver) selected.")
+                cherrypy.config.update({
+                    "server.socket_host": "0.0.0.0"
+                })
+                cherrypy.quickstart(ScannerServer(), "/", {
+                    "/": {
+                        "tools.staticdir.root": os.path.abspath(os.getcwd())
+                    },
+                    "/static": {
+                        "tools.staticdir.on": True,
+                        "tools.staticdir.dir": "./server_files"
+                    }
+                })
+            else:
+                logger.info("Beacon scanner mode selected.")
+                scanner = Scanner(logger, **config['scanner'])
+                advertisements = scanner.scan()
+                output = advertisements
     except Exception:
         logger.exception("Fatal exception encountered")
     finally:
