@@ -23,6 +23,7 @@ import yaml
 import subprocess
 import cherrypy
 import os
+from multiprocessing import Process
 
 # Default configuration
 LOG_NAME = 'pi_pact.log'
@@ -607,9 +608,36 @@ class Scanner(object):
         return advertisements
 
 class ScannerServer:
+    def __init__(self, logger, config):
+        self._logger = logger
+        self._config = config
+        self._current_job = None
+
     @cherrypy.expose
     def index(self):
         return open("index.html")
+
+    @cherrypy.expose
+    @cherrypy.tools.accept(media='text/plain')
+    def scan_with_cli_opts(self):
+        self._current_job = Process(target=self._scan_with_cli_opts, args=[])
+        return "good"
+
+    def _scan_with_cli_opts(self):
+        self._logger.info("Executing scanner with default options from web.")
+        scanner = Scanner(self._logger, **self._config)
+        scanner.scan()
+
+    @cherrypy.expose
+    @cherrypy.tools.accept(media='text/plain')
+    def job_active(self):
+        if self._current_job == None:
+            return "none"
+        else:
+            if self._current_job.is_alive():
+                return "some"
+            else:
+                return "done"
     
 def setup_logger(config):
     """Setup and return logger based on configuration."""
@@ -737,7 +765,7 @@ def main(args):
                 cherrypy.config.update({
                     "server.socket_host": "0.0.0.0"
                 })
-                cherrypy.quickstart(ScannerServer(), "/", {
+                cherrypy.quickstart(ScannerServer(logger, config['scanner']), "/", {
                     "/": {
                         "tools.staticdir.root": os.path.abspath(os.getcwd())
                     },
