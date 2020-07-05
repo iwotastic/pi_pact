@@ -31,7 +31,8 @@ client.connect(args.address, username=args.user, password=getpass("Password for 
 with client.open_sftp() as sftp:
   # Set up files to send
   filesToSend = [
-    "pi_pact.py"
+    "pi_pact.py",
+    "pi_pact_config.yml"
   ]
 
   # Send to main dir
