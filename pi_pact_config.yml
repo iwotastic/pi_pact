@@ -4,7 +4,7 @@
 advertiser:
   control_file: 'advertiser_control' # Control file which stops beacon advertisement before timeout
   timeout: 20 # Advertisement timeout (s)
-  uuid: '' # UUID, major, and minor values to advertise
+  uuid: '035ad073-5fdf-402e-8aa5-6e1623f62a7f' # UUID, major, and minor values to advertise
   major: 1
   minor: 1 
   tx_power: 1 # Tx power at which to advertise
