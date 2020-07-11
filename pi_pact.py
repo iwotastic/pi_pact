@@ -618,9 +618,9 @@ class ScannerServer:
         return open("index.html")
 
     @cherrypy.expose
-    @cherrypy.tools.accept(media='text/plain')
     def scan_with_cli_opts(self):
         self._current_job = Process(target=self._scan_with_cli_opts, args=[])
+        self._current_job.start()
         return "good"
 
     def _scan_with_cli_opts(self):
@@ -629,7 +629,6 @@ class ScannerServer:
         scanner.scan()
 
     @cherrypy.expose
-    @cherrypy.tools.accept(media='text/plain')
     def job_active(self):
         if self._current_job == None:
             return "none"
