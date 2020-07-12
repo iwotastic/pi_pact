@@ -1,4 +1,106 @@
 body {
   font-family: "Helvetica Neue", Helvetica, sans-serif;
   font-size: 12pt;
+  margin: 0;
+  padding: 0;
+}
+
+h1 > small {
+  font-size: 50%;
+  color: #aaa;
+  font-style: italic;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.alert {
+  padding: 7pt;
+  margin: 5pt;
+  color: #333;
+  background-color: #eee;
+  border: 1pt #666 solid;
+  border-radius: 3pt;
+}
+
+.alert.success {
+  color: rgb(7, 83, 14);
+  background-color: rgb(138, 231, 120);
+  border: 1pt rgb(8, 109, 30) solid;
+  border-radius: 3pt;
+}
+
+.alert.warning {
+  color: rgb(83, 78, 7);
+  background-color: rgb(231, 224, 120);
+  border: 1pt rgb(109, 107, 8) solid;
+  border-radius: 3pt;
+}
+
+.alert.danger {
+  color: rgb(83, 7, 7);
+  background-color: rgb(231, 120, 120);
+  border: 1pt rgb(109, 8, 8) solid;
+  border-radius: 3pt;
+}
+
+button {
+  padding: 7pt;
+  margin: 5pt;
+  color: rgb(32, 32, 32);
+  background-color: rgb(179, 179, 179);
+  border: 1pt rgb(214, 214, 214) solid;
+  border-radius: 3pt;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 12pt;
+  text-align: left;
+}
+
+button:hover {
+  color: rgb(75, 75, 75);
+  background-color: rgb(218, 218, 218);
+  border: 1pt rgb(143, 143, 143) solid;
+  border-radius: 3pt;
+}
+
+button:active {
+  color: rgb(94, 27, 19);
+  background-color: rgb(228, 120, 108);
+  border: 1pt rgb(158, 70, 60) solid;
+  border-radius: 3pt;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.spinner {
+  position: fixed;
+  top: 5pt;
+  right: 5pt;
+  display: block;
+  width: 20pt;
+  height: 20pt;
+  overflow: hidden;
+  padding-right: 5pt;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spinner > div {
+  width: 20pt;
+  height: 20pt;
+  border-radius: 10pt;
+  border: 3pt #aaa solid;
+	border-bottom: 3pt transparent solid;
+	animation: spin 1s infinite linear;
 }

@@ -7,7 +7,13 @@
   <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-  <h1>PiPACT Scanner Dashboard</h1>
+  <h1>PiPACT Scanner Dashboard 
+    <small id="refresh-status">(Refreshing...)</small>
+    <span class="spinner" id="spinner">
+      <div></div>
+    </span>
+  </h1>
+  <div id="status" class="alert">Awaiting initial status...</div>
   <button id="scan-based-on-cli">Perform a scan based on the command line options</button>
   <script src="static/script.js"></script>
 </body>
