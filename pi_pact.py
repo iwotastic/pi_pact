@@ -22,7 +22,9 @@ from uuid import uuid1
 import yaml
 import subprocess
 import cherrypy
+from cherrypy.lib import static
 import os
+import json
 from multiprocessing import Process
 
 # Default configuration
@@ -637,6 +639,19 @@ class ScannerServer:
                 return "some"
             else:
                 return "done"
+    
+    @cherrypy.expose
+    def list_scans(self):
+        search_path = Path(".")
+        scan_list = search_path.glob("pi_pact_scan*")
+        output = json.dumps([file.name for file in scan_list])
+        return output
+
+    @cherrypy.expose
+    def download_scan(self, scan):
+        search_path = Path(".")
+        scan_path = search_path.joinpath(scan)
+        return static.serve_file(scan_path.resolve(), "application/x-download", "attachment", scan)
     
 def setup_logger(config):
     """Setup and return logger based on configuration."""

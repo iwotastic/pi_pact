@@ -13,8 +13,16 @@
       <div></div>
     </span>
   </h1>
+  <h2>Scanner Status:</h2>
   <div id="status" class="alert">Awaiting initial status...</div>
-  <button id="scan-based-on-cli">Perform a scan based on the command line options</button>
+  <h2>Actions:</h2>
+  <button id="scan-based-on-cli" disabled>Perform a scan based on the command line options</button>
+  <button id="download-scans">Download a completed scan</button>
+  <div id="download-scans-dialog" class="dialog hidden">
+    <h2>Choose a Scan to Download</h2>
+    <select id="scan-selector"></select>
+    <button id="download-scan">Download this scan</button>
+  </div>
   <script src="static/script.js"></script>
 </body>
 </html>

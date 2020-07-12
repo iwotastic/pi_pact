@@ -5,6 +5,18 @@ body {
   padding: 0;
 }
 
+h1:first-of-type {
+  padding: 4pt;
+  margin: 0;
+  color: #fff;
+  background-color: #333;
+}
+
+h2 {
+  margin: 0;
+  padding: 4pt;
+}
+
 h1 > small {
   font-size: 50%;
   color: #aaa;
@@ -72,6 +84,15 @@ button:active {
   border-radius: 3pt;
 }
 
+button:disabled {
+  color: rgb(107, 107, 107);
+  text-decoration: line-through;
+  text-decoration-color: red;
+  background-color: rgb(211, 211, 211);
+  border: 1pt rgb(241, 241, 241) solid;
+  border-radius: 3pt;
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -100,7 +121,24 @@ button:active {
   width: 20pt;
   height: 20pt;
   border-radius: 10pt;
-  border: 3pt #aaa solid;
+  border: 3pt rgb(74, 90, 233) solid;
 	border-bottom: 3pt transparent solid;
 	animation: spin 1s infinite linear;
+}
+
+.dialog {
+  display: block;
+  position: fixed;
+  width: 94vw;
+  left: 3vw;
+  height: 97vh;
+  top: 3vh;
+  background-color: #fff;
+  border-top-left-radius: 5pt;
+  border-top-right-radius: 5pt;
+  box-shadow: 0 0 50pt #333;
+}
+
+.dialog.hidden {
+  display: none;
 }
